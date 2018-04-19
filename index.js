@@ -37,16 +37,15 @@ function Update() {
 	c.fillRect(0,canvas.height-100,canvas.width-1,99)
 	gravity()
 	jumping()
-	countmeters()
+	countmeters() 
+	collision();               
 	if (spikeArray.length > 0) {
 		for (i = 0; i < spikeArray.length;i++) {
 			c.drawImage(spr_spike,spikeArray[i].x,spikeArray[i].y,64,64)
-			c.strokeRect(spikeArray[i].x,spikeArray[i].y+32,64,32)
 			spikeArray[i].x -= spikespeed
 		}
 		checkEdge();
 	} else {spawning();}
-	console.log(jump)
 }
 
 function create_spike(x, y) {
@@ -58,7 +57,6 @@ function create_player(x, y) {
 	this.x = x
 	this.y = y
 	this.speed = 0
-	this.trys = 1
 	this.jump = -1000
 	this.accel = 1
 }
@@ -77,6 +75,8 @@ document.onkeydown = function(event) {
 	} 
 	} else if (key == 39) {
 		spikespeed++
+	} else if (key == 37) {
+		spikespeed--
 	}
 }
 
@@ -94,7 +94,6 @@ function checkEdge() {
 	for (i = 0; i < spikeArray.length; i++) {
 		if (spikeArray[i].x <-64) {
 			spikeArray.splice(i,1)
-			console.log("Edge!")
 		}
 	}
 }
@@ -111,11 +110,20 @@ function gravity() {
 }
 
 function collision() {
-	
+    for (var j = 0; j < spikeArray.length; j++) {
+        if ((spikeArray[j].x + 64) >= (player.x) && (spikeArray[j].x) <= (player.x + 64) &&
+            (spikeArray[j].y + 64) >= (player.y) && (spikeArray[j].y + 32) <= (player.y + 64)) {            
+    	spikeArray = []
+    	spikespeed = 4;
+    	meters = 0
+    	break
+    	}	
+    }
 }
 
 function spawning() {
  for (var i = 0; i < rate;i ++) {
- 	spikeArray.push(new create_spike((Math.floor(Math.random() * 10) * 200) + 700, canvas.height-164))
+ 	spikeArray.push(new create_spike(Math.floor(Math.random() * 10)*300 + 700, canvas.height-164))
+ 	console.log(Math.floor(Math.random() * 10)*100 + 700)
  }
 }
